@@ -10,9 +10,9 @@ stock::~stock()
     //dtor
 }
 
-bool stock::read(string filename)
+bool stock::read(const char *filename)
 {
-    ifstream fid(filename.c_str(), ifstream::in);
+    ifstream fid(filename, ifstream::in);
 
     if( !fid.is_open() )
         return true;

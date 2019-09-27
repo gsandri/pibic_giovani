@@ -15,7 +15,7 @@ class stock
 
         stock();
         virtual ~stock();
-        bool read(string filename);
+        bool read(const char* filename);
 
     protected:
 
