@@ -4,6 +4,7 @@
 #include <string>
 #include <cstdio>
 #include <stdlib.h>
+#include "stock.h"
 
 using namespace std;
 
@@ -52,6 +53,7 @@ double *readFile(const char *filename)
     return values;
 }
 
+/*
 int main()
 {
     double *BBAS3 = readFile("/home/sandri/Downloads/BVMF/BBAS3.txt");
@@ -255,4 +257,16 @@ int main()
     free(KROT3);
     free(PETR4);
     free(ABEV3);
+}
+*/
+
+int main()
+{
+    stock teste;
+
+    teste.read("/home/sandri/Downloads/BBAS3.SA.csv");
+
+    cout << "Size: " << teste.values.size() << endl;
+    for(vector<double>::iterator value = teste.values.begin(); value<teste.values.end(); value++)
+        cout << *value << endl;
 }
