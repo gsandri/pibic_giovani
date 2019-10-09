@@ -1,0 +1,18 @@
+class walelt
+{
+vector<stock> acoes;
+vector<double> porcentagem;
+
+wallet()
+~wallet();
+void insert(stock &acoes, double porcentagem = 0);
+
+
+void wallet::insert(stock &acao, double porcentagem = 0);
+{
+this-> acoes.isnert(this->acoes.end(), acao);
+this-> porcentagem.insert(this->porcentagem.end(), porcentagem)
+
+main{
+wallet ref, c2v;
+ref.insert(A,40);
