@@ -19,7 +19,10 @@ public:
     virtual ~stock();
     bool read(const char* filename, string name);
     double corr(stock &that);
+    double variance(stock &that);
     double operator*(stock &that);
+    double operator^(stock &that);
+    double gain();
 
 protected:
 

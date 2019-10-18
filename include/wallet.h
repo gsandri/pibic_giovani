@@ -13,7 +13,9 @@ public:
     ~wallet();
 
     void insert(stock &acoes, double porcentagem = 0);
-    void defineFromReference(wallet *reference);
+    void fromReference(wallet *reference);
+    void modernPortfolioTheory(double r0=0);
+    void naive();
 };
 
 #endif // WALLET_H
