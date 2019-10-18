@@ -10,12 +10,14 @@ stock::~stock()
     //dtor
 }
 
-bool stock::read(const char *filename)
+bool stock::read(const char *filename, string name)
 {
     ifstream fid(filename, ifstream::in);
 
     if( !fid.is_open() )
         return true;
+
+    this->name = name;
 
     string line;
     double value;

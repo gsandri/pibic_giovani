@@ -5,9 +5,11 @@ CONFIG -= qt
 
 SOURCES += \
         main.cpp \
-        ./src/stock.cpp
+        ./src/stock.cpp \
+        ./src/wallet.cpp
 
 HEADERS += \
-        ./include/stock.h
+        ./include/stock.h \
+        ./include/wallet.h
 
 INCLUDEPATH += ./include

@@ -13,10 +13,11 @@ class stock
 {
 public:
     vector<double> values;
+    string name;
 
     stock();
     virtual ~stock();
-    bool read(const char* filename);
+    bool read(const char* filename, string name);
     double corr(stock &that);
     double operator*(stock &that);
 

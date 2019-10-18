@@ -5,18 +5,31 @@
 #include <cstdio>
 #include <stdlib.h>
 #include "stock.h"
+#include "wallet.h"
 
 using namespace std;
 
 int main()
 {
-    stock BBAS3, MMM;
+    wallet referencia, carteira;
+    stock BBAS3, MMM, TIET11;
 
-    BBAS3.read("/home/sandri/Downloads/BBAS3.SA.csv");
-    MMM.read("/home/sandri/Downloads/MMM.csv");
+    BBAS3.read("./pibic_giovani/BVMF/BBAS3.SA.csv", "Banco do Brasil");
+    MMM.read("./pibic_giovani/BVMF/MMM.csv", "3M");
+    TIET11.read("./pibic_giovani/BVMF/ABEV3.SA.csv", "Ambev");
 
-    cout << "BBAS3 x BBAS3: " << BBAS3 * BBAS3 << endl;
-    cout << "BBAS3 x  MMM : " << BBAS3 *  MMM  << endl;
-    cout << " MMM  x BBAS3: " <<  MMM  * BBAS3 << endl;
-    cout << " MMM  x  MMM : " <<  MMM  *  MMM  << endl;
+    referencia.insert(BBAS3, 0.5);
+    referencia.insert(MMM, 0.5);
+
+    carteira.insert(BBAS3);
+    carteira.insert(MMM);
+    carteira.insert(TIET11);
+
+    carteira.defineFromReference(&referencia);
+
+    for(size_t i=0; i<carteira.acoes.size(); i++)
+    {
+        cout << carteira.acoes[i].name << endl;
+        cout << "\t" << carteira.porcentagem[i] << endl;
+    }
 }
