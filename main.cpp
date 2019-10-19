@@ -14,10 +14,12 @@ int main()
     wallet referencia, carteira;
     stock *acoes = new stock[3];
 
+    // Get historical data from file
     acoes[0].read("/home/sandri/Projects/pibic_giovani/BVMF/ABEV3.SA.csv","Ambev");
     acoes[1].read("/home/sandri/Projects/pibic_giovani/BVMF/BBAS3.SA.csv","Banco do Brasil");
     acoes[2].read("/home/sandri/Projects/pibic_giovani/BVMF/MDIA3.SA.csv","M. Dias Branco");
 
+    // Reference wallet
     referencia.insert(acoes[2]);
     referencia.insert(acoes[0]);
     referencia.modernPortfolioTheory();
@@ -27,6 +29,7 @@ int main()
         cout << "  " << referencia.porcentagem[i] << '\t' << referencia.acoes[i]->name << endl;
     cout << endl;
 
+    // Create carteira
     carteira.insert(acoes[0]);
     carteira.insert(acoes[1]);
     carteira.insert(acoes[2]);
