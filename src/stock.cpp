@@ -43,7 +43,7 @@ bool stock::read(const char *filename, string name)
 
         value = stod(line.substr(pos[5]+1, pos[6]-pos[5]-1));
 
-        values.insert(values.end(), value);
+        values.push_back(value);
     }
 
     fid.close();
@@ -117,7 +117,7 @@ double stock::variance(stock &that)
         S12 += d1*d2;
     }
 
-    return S12/N;
+    return S12/(N-1);
 }
 
 double stock::operator*(stock &that)

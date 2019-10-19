@@ -1,10 +1,5 @@
 #include "wallet.h"
 
-wallet::wallet()
-{
-
-}
-
 wallet::~wallet()
 {
     this->acoes.clear();
@@ -13,8 +8,8 @@ wallet::~wallet()
 
 void wallet::insert(stock &acao, double porcentagem)
 {
-    this-> acoes.insert(this->acoes.end(), acao);
-    this-> porcentagem.insert(this->porcentagem.end(), porcentagem);
+    this->acoes.push_back(&acao);
+    this->porcentagem.push_back(porcentagem);
 }
 
 void wallet::fromReference(wallet *reference)
@@ -35,7 +30,7 @@ void wallet::fromReference(wallet *reference)
         corr_sum = 0;
         while( ind_car-- )
         {
-            corr[ind_car] = this->acoes[ind_car] * reference->acoes[ind_ref];
+            corr[ind_car] = *this->acoes[ind_car] * *reference->acoes[ind_ref];
             if( corr[ind_car]<0 )
                 corr[ind_car] = 0;
 
@@ -70,9 +65,9 @@ void wallet::modernPortfolioTheory(double r0)
     size_t n, i, j;
     for(i=0; i<N; i++)
     {
-        R[i] = this->acoes[i].gain();
+        R[i] = this->acoes[i]->gain();
         for(j=0; j<N; j++)
-            C[i+N*j] = this->acoes[i] ^ this->acoes[j];
+            C[i+N*j] = *this->acoes[i] ^ *this->acoes[j];
     }
 
     // Random guess of weights

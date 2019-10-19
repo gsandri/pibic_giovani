@@ -6,10 +6,10 @@
 class wallet
 {
 public:
-    vector<stock> acoes;
+    vector<stock *> acoes;
     vector<double> porcentagem;
 
-    wallet();
+    wallet() {}
     ~wallet();
 
     void insert(stock &acoes, double porcentagem = 0);

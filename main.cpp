@@ -18,13 +18,13 @@ int main()
     acoes[1].read("/home/sandri/Projects/pibic_giovani/BVMF/BBAS3.SA.csv","Banco do Brasil");
     acoes[2].read("/home/sandri/Projects/pibic_giovani/BVMF/MDIA3.SA.csv","M. Dias Branco");
 
-    referencia.insert(acoes[0]);
     referencia.insert(acoes[2]);
+    referencia.insert(acoes[0]);
     referencia.modernPortfolioTheory();
 
     cout << endl << "REFERENCIA (Definido pela Teoria Moderna de Portifolios)" << endl;
     for(size_t i=0; i<referencia.acoes.size(); i++)
-        cout << "  " << referencia.porcentagem[i] << '\t' << referencia.acoes[i].name << endl;
+        cout << "  " << referencia.porcentagem[i] << '\t' << referencia.acoes[i]->name << endl;
     cout << endl;
 
     carteira.insert(acoes[0]);
@@ -35,7 +35,7 @@ int main()
 
     cout << endl << "CARTEIRA" << endl;
     for(size_t i=0; i<carteira.acoes.size(); i++)
-        cout << "  " << carteira.porcentagem[i] << '\t' << carteira.acoes[i].name << endl;
+        cout << "  " << carteira.porcentagem[i] << '\t' << carteira.acoes[i]->name << endl;
     cout << endl;
 
     delete [] acoes;
