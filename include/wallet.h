@@ -32,6 +32,15 @@ public:
      * stocks are equally distributed
      */
     void naive();
+
+    /* Determine wallet stock distribution using the naive approach where
+     * stocks are equally distributed
+     */
+    bool itselfIterative();
+
+    void huffman();
+
+    void print();
 };
 
 #endif // WALLET_H

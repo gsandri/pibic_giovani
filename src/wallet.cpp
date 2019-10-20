@@ -155,3 +155,111 @@ void wallet::naive()
     while( N-- )
         this->porcentagem[N] = prop;
 }
+
+bool wallet::itselfIterative()
+{
+    double *prop = new double[this->acoes.size()];
+    this->naive();
+    size_t i, n;
+    double diff_max, diff;
+
+    i = this->acoes.size();
+    while( i-- )
+        prop[i] = this->porcentagem[i];
+
+    n = 0;
+    do
+    {
+        n++;
+
+        this->fromReference(this);
+        diff_max = 0;
+
+        i = this->acoes.size();
+        while( i-- )
+        {
+            diff = abs( prop[i] - this->porcentagem[i] );
+            prop[i] = this->porcentagem[i];
+            if( diff>diff_max )
+                diff_max = diff;
+        }
+    } while( diff_max > 1e-6 && n<10000 );
+
+    delete [] prop;
+    return n>=10000;
+}
+
+void __agrupa(size_t N, vector<double> &prop, double *corr, vector<size_t> *index)
+{
+    size_t m, n, im=0, in=0;
+    double corr_max = -2;
+
+    for(n=0; n<N; n++)
+    {
+        for(m=n+1; m<N; m++)
+        {
+            if( corr[n+m*N]>corr_max )
+            {
+                corr_max = corr[n+m*N];
+                in = n;
+                im = m;
+            }
+        }
+    }
+    if( corr_max<-1 )
+        return;
+
+    for(n=0; n<N; n++)
+    {
+        corr[in+n*N] = max(corr[in+n*N], corr[im+n*N]);
+        corr[n+in*N] = max(corr[n+in*N], corr[n+im*N]);
+    }
+    for(n=0; n<N; n++)
+    {
+        corr[im+n*N] = -2;
+        corr[n+im*N] = -2;
+    }
+
+    n = index[im].size();
+    while( n-- )
+        index[in].push_back(index[im][n]);
+    index[im].clear();
+
+    n = index[in].size();
+    while( n-- )
+        prop[index[in][n]] /= 2;
+
+    __agrupa(N, prop, corr, index);
+}
+
+void wallet::huffman()
+{
+    size_t N = this->acoes.size();
+    double *corr = new double[N*N];
+    vector<size_t> *index = new vector<size_t>[N];
+
+    size_t n, m;
+
+    for(n=0; n<N; n++)
+    {
+        this->porcentagem[n] = 1;
+        index[n].push_back(n);
+
+        for(m=0; m<=n; m++)
+            corr[n+m*N] = -2;
+        for(; m<N; m++)
+            corr[n+m*N] = *this->acoes[n] * *this->acoes[m];
+    }
+
+    __agrupa(N, this->porcentagem, corr, index);
+
+    delete [] corr;
+    delete [] index;
+}
+
+void wallet::print()
+{
+    for(size_t i=0; i<this->acoes.size(); i++)
+        cout << "  " << this->porcentagem[i] << '\t' << this->acoes[i]->name << endl;
+    cout << endl;
+}

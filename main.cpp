@@ -22,24 +22,43 @@ int main()
     // Reference wallet
     referencia.insert(acoes[2]);
     referencia.insert(acoes[0]);
-    referencia.modernPortfolioTheory();
+    referencia.modernPortfolioTheory(.05);
 
-    cout << endl << "REFERENCIA (Definido pela Teoria Moderna de Portifolios)" << endl;
-    for(size_t i=0; i<referencia.acoes.size(); i++)
-        cout << "  " << referencia.porcentagem[i] << '\t' << referencia.acoes[i]->name << endl;
-    cout << endl;
+    cout << endl << "REFERENCIA (Teoria Moderna de Portifolios)" << endl;
+    referencia.print();
 
     // Create carteira
     carteira.insert(acoes[0]);
     carteira.insert(acoes[1]);
     carteira.insert(acoes[2]);
 
+    // Imprime carteira
+    cout << endl << "CARTEIRA (baseada na referencia definida pela Teoria Moderna de Portifolios)" << endl;
     carteira.fromReference(&referencia);
+    carteira.print();
 
-    cout << endl << "CARTEIRA" << endl;
-    for(size_t i=0; i<carteira.acoes.size(); i++)
-        cout << "  " << carteira.porcentagem[i] << '\t' << carteira.acoes[i]->name << endl;
-    cout << endl;
+    cout << endl << "CARTEIRA (baseada na referencia definida pelo metodo naive)" << endl;
+    referencia.naive();
+    carteira.fromReference(&referencia);
+    carteira.print();
+
+    cout << endl << "CARTEIRA (Teoria Moderna de Portifolios)" << endl;
+    carteira.modernPortfolioTheory(.05);
+    carteira.print();
+
+    cout << endl << "CARTEIRA (baseada em si mesma)" << endl;
+    if( carteira.itselfIterative() )
+        cout << "Nao consegui determinar carteira pelo metodo itselfIterative" << endl;
+    else
+        carteira.print();
+
+    cout << endl << "CARTEIRA (definida por Huffman)" << endl;
+    carteira.huffman();
+    carteira.print();
+
+    cout << endl << "CARTEIRA (baseada em si mesma definida por Huffman)" << endl;
+    carteira.fromReference(&carteira);
+    carteira.print();
 
     delete [] acoes;
 }
