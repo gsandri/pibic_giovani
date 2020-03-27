@@ -41,6 +41,8 @@ public:
     void huffman();
 
     void print();
+
+    void gain_in_evaluate_interval(double &gain, double &variance);
 };
 
 #endif // WALLET_H

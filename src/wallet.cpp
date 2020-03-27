@@ -263,3 +263,35 @@ void wallet::print()
         cout << "  " << this->porcentagem[i] << '\t' << this->acoes[i]->name << endl;
     cout << endl;
 }
+
+void wallet::gain_in_evaluate_interval(double &gain, double &variance)
+{
+    size_t N = this->acoes.size();
+
+    double *C = new double[N*N];    // Covariance matrix
+    double *wC = new double[N];     // weights * Covariance matrix
+
+    // Compute Covariance matrix
+    size_t i, j;
+    for(i=0; i<N; i++)
+    {
+        for(j=0; j<N; j++)
+            C[i+N*j] = this->acoes[i]->variance_in_evaluate_interval(*this->acoes[j]);
+    }
+
+    // Compute gain and variance
+    gain = 0;
+    variance = 0;
+    for(i=0; i<N; i++)
+    {
+        gain += this->porcentagem[i]*this->acoes[i]->gain_in_evaluate_interval();
+        wC[i] = 0;
+        for(j=0; j<N; j++)
+            wC[i] += this->porcentagem[j]*C[i+N*j];
+    }
+    for(i=0; i<N; i++)
+        variance += this->porcentagem[i]*wC[i];
+
+    delete [] C;
+    delete [] wC;
+}

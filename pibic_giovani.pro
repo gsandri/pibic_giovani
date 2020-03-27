@@ -6,10 +6,12 @@ CONFIG -= qt
 SOURCES += \
         main.cpp \
         ./src/stock.cpp \
-        ./src/wallet.cpp
+        ./src/wallet.cpp \
+    definicoes.cpp
 
 HEADERS += \
         ./include/stock.h \
-        ./include/wallet.h
+        ./include/wallet.h \
+    definicoes.h
 
 INCLUDEPATH += ./include

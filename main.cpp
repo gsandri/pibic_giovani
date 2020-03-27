@@ -6,59 +6,54 @@
 #include <stdlib.h>
 #include "stock.h"
 #include "wallet.h"
+#include <stdlib.h>
+#include "definicoes.h"
 
 using namespace std;
 
 int main()
 {
     wallet referencia, carteira;
-    stock *acoes = new stock[3];
+    stock *acoes = new stock[78];
+    double gain, variance;
+    bool *flag = new bool[78];
+    ofstream fid(SAVE_TSV_FILES "Compilados_PIBIC_Giovani.tsv", ofstream::out | ofstream::binary | ofstream::trunc);
 
-    // Get historical data from file
-    acoes[0].read("/home/sandri/Projects/pibic_giovani/BVMF/ABEV3.SA.csv","Ambev");
-    acoes[1].read("/home/sandri/Projects/pibic_giovani/BVMF/BBAS3.SA.csv","Banco do Brasil");
-    acoes[2].read("/home/sandri/Projects/pibic_giovani/BVMF/MDIA3.SA.csv","M. Dias Branco");
+    fid << "Numero de acoes na carteira\tMetodo\tGanho\tVariancia\n";
 
-    // Reference wallet
-    referencia.insert(acoes[2]);
-    referencia.insert(acoes[0]);
-    referencia.modernPortfolioTheory(.05);
+    cout << "Lendo acoes" << endl;
+    readStocks(referencia, acoes);
 
-    cout << endl << "REFERENCIA (Teoria Moderna de Portifolios)" << endl;
-    referencia.print();
+    cout << "Aplicando a Teoria Moderda dos Portifolios na referencia" << endl;
+    referencia.modernPortfolioTheory();
 
-    // Create carteira
-    carteira.insert(acoes[0]);
-    carteira.insert(acoes[1]);
-    carteira.insert(acoes[2]);
+    size_t rep;
+    vector<size_t> number_of_stocks = {30,20,15,10,7,5,4,3,2};
+    vector<size_t>::iterator number, number_end = number_of_stocks.end();
 
-    // Imprime carteira
-    cout << endl << "CARTEIRA (baseada na referencia definida pela Teoria Moderna de Portifolios)" << endl;
-    carteira.fromReference(&referencia);
-    carteira.print();
+    cout << "Compilando dados" << endl;
+    for(number = number_of_stocks.begin(); number<number_end; number++)
+    {
+        cout << "  " << *number << " acoes na carteira" << endl;
+        for(rep = 0; rep<REPETICOES; rep++)
+        {
+            createRandonWallet(carteira, acoes, flag, 78, *number);
 
-    cout << endl << "CARTEIRA (baseada na referencia definida pelo metodo naive)" << endl;
-    referencia.naive();
-    carteira.fromReference(&referencia);
-    carteira.print();
+            carteira.naive();
+            carteira.gain_in_evaluate_interval(gain, variance);
+            fid << *number << "\t0\t" << gain << "\t" << variance << endl;
 
-    cout << endl << "CARTEIRA (Teoria Moderna de Portifolios)" << endl;
-    carteira.modernPortfolioTheory(.05);
-    carteira.print();
+            carteira.fromReference(&referencia);
+            carteira.gain_in_evaluate_interval(gain, variance);
+            fid << *number << "\t1\t" << gain << "\t" << variance << endl;
 
-    cout << endl << "CARTEIRA (baseada em si mesma)" << endl;
-    if( carteira.itselfIterative() )
-        cout << "Nao consegui determinar carteira pelo metodo itselfIterative" << endl;
-    else
-        carteira.print();
+            carteira.modernPortfolioTheory(TAXA_SELIC);
+            carteira.gain_in_evaluate_interval(gain, variance);
+            fid << *number << "\t2\t" << gain << "\t" << variance << endl;
+        }
+    }
 
-    cout << endl << "CARTEIRA (definida por Huffman)" << endl;
-    carteira.huffman();
-    carteira.print();
-
-    cout << endl << "CARTEIRA (baseada em si mesma definida por Huffman)" << endl;
-    carteira.fromReference(&carteira);
-    carteira.print();
-
+    fid.close();
     delete [] acoes;
+    delete [] flag;
 }
