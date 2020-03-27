@@ -116,13 +116,15 @@ double stock::corr(stock &that)
 
 double stock::variance(stock &that)
 {
-    size_t N = this->values.size();
+    size_t N = this->values.size(), M;
     if( N>that.values.size() )
         N = that.values.size();
 
     vector<double>::iterator v1 = this->values.begin() + static_cast<long>(this->values.size()-N);
     vector<double>::iterator v2 = that.values.begin()  + static_cast<long>(that.values.size()-N);
     vector<double>::iterator vend = this->values.end() - YEAR_NEVAL;
+
+    M = static_cast<size_t>(vend - v1);
 
     double S12 = 0;
     double m1 = 0, m2 = 0;
@@ -132,8 +134,8 @@ double stock::variance(stock &that)
         m1 += *(v1++);
         m2 += *(v2++);
     }
-    m1 /= N;
-    m2 /= N;
+    m1 /= M;
+    m2 /= M;
 
     v1 = this->values.begin() + static_cast<long>(this->values.size()-N);
     v2 = that.values.begin()  + static_cast<long>(that.values.size()-N);
@@ -145,12 +147,12 @@ double stock::variance(stock &that)
         S12 += d1*d2;
     }
 
-    return S12/(N-1);
+    return S12/(M-1);
 }
 
 double stock::variance_in_evaluate_interval(stock &that)
 {
-    size_t N = this->values.size();
+    size_t N = this->values.size(), M;
     if( N>that.values.size() )
         N = that.values.size();
 
@@ -164,6 +166,8 @@ double stock::variance_in_evaluate_interval(stock &that)
         v2 += YEAR_NEVAL-N;
     }
 
+    M = static_cast<size_t>(vend - v1);
+
     double S12 = 0;
     double m1 = 0, m2 = 0;
 
@@ -172,11 +176,11 @@ double stock::variance_in_evaluate_interval(stock &that)
         m1 += *(v1++);
         m2 += *(v2++);
     }
-    m1 /= N;
-    m2 /= N;
+    m1 /= M;
+    m2 /= M;
 
-    v1 = this->values.begin() + static_cast<long>(this->values.size()-N);
-    v2 = that.values.begin()  + static_cast<long>(that.values.size()-N);
+    v1 = this->values.end() - M;
+    v2 = that.values.end()  - M;
     while( v1<vend )
     {
         double d1 = *(v1++)/m1-1;
@@ -185,7 +189,7 @@ double stock::variance_in_evaluate_interval(stock &that)
         S12 += d1*d2;
     }
 
-    return S12/(N-1);
+    return S12/(M-1);
 }
 
 double stock::operator*(stock &that)
