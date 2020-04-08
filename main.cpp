@@ -18,22 +18,6 @@ int main()
 {
     wallet referencia, carteira;
     stock *acoes = new stock[78];
-
-    cout << "Lendo acoes" << endl;
-    readStocks(referencia, acoes);
-
-    cout << "Aplicando a Teoria Moderda dos Portifolios na referencia" << endl;
-    referencia.modernPortfolioTheory(TAXA_SELIC);
-    referencia.print();
-
-    delete [] acoes;
-    return 0;
-}
-
-int main2()
-{
-    wallet referencia, carteira;
-    stock *acoes = new stock[78];
     double gain, variance;
     bool *flag = new bool[78];
     ofstream fid(SAVE_TSV_FILES "Compilados_PIBIC_Giovani.tsv", ofstream::out | ofstream::binary | ofstream::trunc);
