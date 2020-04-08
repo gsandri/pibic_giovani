@@ -147,6 +147,92 @@ void wallet::modernPortfolioTheory(double r0)
     delete [] wC;
 }
 
+void wallet::smallerVariance()
+{
+    size_t N = this->acoes.size();
+
+    double *C = new double[N*N];    // Covariance matrix
+    double *w = new double[N];      // weights
+    double *wC = new double[N];     // weights * Covariance matrix
+
+    double minVariance = 1000000000;
+
+    // Compute Covariance matrix
+    size_t n, i, j;
+    for(i=0; i<N; i++)
+        for(j=0; j<N; j++)
+            C[i+N*j] = *this->acoes[i] ^ *this->acoes[j];
+
+    // Random guess of weights
+    n = N<<12;
+    while( n-- )
+    {
+        double S = 0;
+        for(i=0; i<N; i++)
+        {
+            w[i] = rand()%1024;
+            S += w[i];
+        }
+        for(i=0; i<N; i++)
+            w[i] /= S;
+
+        double variance = 0;
+        for(i=0; i<N; i++)
+        {
+            wC[i] = 0;
+            for(j=0; j<N; j++)
+                wC[i] += w[j]*C[i+N*j];
+        }
+        for(i=0; i<N; i++)
+            variance += w[i]*wC[i];
+
+        if( variance<minVariance )
+        {
+            minVariance = variance;
+            for(i=0; i<N; i++)
+                this->porcentagem[i] = w[i];
+        }
+    }
+
+    // Refining
+    n = 0;
+    while( n<8192 )
+    {
+        double S = 0;
+        for(i=0; i<N; i++)
+        {
+            w[i] = this->porcentagem[i] + (rand()%1024)/2048/N;
+            S += w[i];
+        }
+        for(i=0; i<N; i++)
+            w[i] /= S;
+
+        double variance = 0;
+        for(i=0; i<N; i++)
+        {
+            wC[i] = 0;
+            for(j=0; j<N; j++)
+                wC[i] += w[j]*C[i+N*j];
+        }
+        for(i=0; i<N; i++)
+            variance += w[i]*wC[i];
+
+        if( variance<minVariance )
+        {
+            minVariance = variance;
+            for(i=0; i<N; i++)
+                this->porcentagem[i] = w[i];
+            n = 0;
+        }
+        else
+            n++;
+    }
+
+    delete [] C;
+    delete [] w;
+    delete [] wC;
+}
+
 void wallet::naive()
 {
     size_t N = this->acoes.size();
@@ -260,7 +346,10 @@ void wallet::huffman()
 void wallet::print()
 {
     for(size_t i=0; i<this->acoes.size(); i++)
-        cout << "  " << this->porcentagem[i] << '\t' << this->acoes[i]->name << endl;
+    {
+        printf("  %+7.2f\t(%+7.2f, %+7.2f)\t", 100*this->porcentagem[i], 100*this->acoes[i]->gain(), 100*this->acoes[i]->gain_in_evaluate_interval());
+        cout << this->acoes[i]->name << endl;
+    }
     cout << endl;
 }
 

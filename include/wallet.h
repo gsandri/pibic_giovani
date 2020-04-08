@@ -28,6 +28,8 @@ public:
      */
     void modernPortfolioTheory(double r0=0);
 
+    void smallerVariance();
+
     /* Determine wallet stock distribution using the naive approach where
      * stocks are equally distributed
      */

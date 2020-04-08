@@ -206,7 +206,7 @@ double stock::gain()
 {
     double S0 = this->values.size() - YEAR_NEVAL;
     double S1 = S0*(S0-1)/2;
-    double S2 = S0*(S0-1)*(2*S0-1)/6;
+    double S2 = S1*(2*S0-1)/3;
     double SY = 0;
     double SYI = 0;
 
@@ -229,16 +229,14 @@ double stock::gain_in_evaluate_interval()
 
     double S0 = n;
     double S1 = S0*(S0-1)/2;
-    double S2 = S0*(S0-1)*(2*S0-1)/6;
+    double S2 = S1*(2*S0-1)/3;
     double SY = 0;
     double SYI = 0;
 
-
-    vector<double>::iterator v1 = this->values.end();
+    vector<double>::iterator value = this->values.end() - n;
     while( n-- )
     {
-        v1--;
-        double ln = log(*v1);
+        double ln = log(value[n]);
         SY += ln;
         SYI += ln*n;
     }
